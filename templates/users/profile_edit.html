@@ -1,0 +1,328 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - E-commerce Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'users:profile' %}">My Profile</a></li>
+            <li class="breadcrumb-item active">Edit Profile</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Edit Profile
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Account Information Section -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-user-circle me-2 text-primary"></i>Account Information
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ user_form.username.id_for_label }}" class="form-label">
+                                        Username <span class="text-danger">*</span>
+                                    </label>
+                                    {{ user_form.username }}
+                                    {% if user_form.username.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ user_form.username.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ user_form.email.id_for_label }}" class="form-label">
+                                        Email Address <span class="text-danger">*</span>
+                                    </label>
+                                    {{ user_form.email }}
+                                    {% if user_form.email.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ user_form.email.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">
+                                        First Name
+                                    </label>
+                                    {{ user_form.first_name }}
+                                    {% if user_form.first_name.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ user_form.first_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">
+                                        Last Name
+                                    </label>
+                                    {{ user_form.last_name }}
+                                    {% if user_form.last_name.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ user_form.last_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Information Section -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-id-card me-2 text-primary"></i>Personal Information
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label">
+                                        Phone Number
+                                    </label>
+                                    {{ profile_form.phone_number }}
+                                    {% if profile_form.phone_number.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.phone_number.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.date_of_birth.id_for_label }}" class="form-label">
+                                        Date of Birth
+                                    </label>
+                                    {{ profile_form.date_of_birth }}
+                                    {% if profile_form.date_of_birth.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.date_of_birth.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ profile_form.profile_picture.id_for_label }}" class="form-label">
+                                    Profile Picture
+                                </label>
+                                {% if profile_form.instance.profile_picture %}
+                                    <div class="mb-2">
+                                        <img src="{{ profile_form.instance.profile_picture.url }}" 
+                                             alt="Current profile picture" 
+                                             class="rounded"
+                                             style="max-width: 150px; max-height: 150px;">
+                                    </div>
+                                {% endif %}
+                                {{ profile_form.profile_picture }}
+                                {% if profile_form.profile_picture.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.profile_picture.errors }}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Recommended size: 300x300 pixels. Max file size: 5MB
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ profile_form.bio.id_for_label }}" class="form-label">
+                                    Bio
+                                </label>
+                                {{ profile_form.bio }}
+                                {% if profile_form.bio.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.bio.errors }}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Tell us a little about yourself (max 500 characters)
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Address Information Section -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>Address Information
+                            </h5>
+
+                            <div class="mb-3">
+                                <label for="{{ profile_form.address_line1.id_for_label }}" class="form-label">
+                                    Address Line 1
+                                </label>
+                                {{ profile_form.address_line1 }}
+                                {% if profile_form.address_line1.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.address_line1.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ profile_form.address_line2.id_for_label }}" class="form-label">
+                                    Address Line 2
+                                </label>
+                                {{ profile_form.address_line2 }}
+                                {% if profile_form.address_line2.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.address_line2.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.city.id_for_label }}" class="form-label">
+                                        City
+                                    </label>
+                                    {{ profile_form.city }}
+                                    {% if profile_form.city.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.city.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.state.id_for_label }}" class="form-label">
+                                        State/Province
+                                    </label>
+                                    {{ profile_form.state }}
+                                    {% if profile_form.state.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.state.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.postal_code.id_for_label }}" class="form-label">
+                                        Postal Code
+                                    </label>
+                                    {{ profile_form.postal_code }}
+                                    {% if profile_form.postal_code.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.postal_code.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ profile_form.country.id_for_label }}" class="form-label">
+                                        Country
+                                    </label>
+                                    {{ profile_form.country }}
+                                    {% if profile_form.country.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ profile_form.country.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences Section -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-cog me-2 text-primary"></i>Preferences
+                            </h5>
+
+                            <div class="form-check form-switch">
+                                {{ profile_form.newsletter_subscription }}
+                                <label class="form-check-label" for="{{ profile_form.newsletter_subscription.id_for_label }}">
+                                    Subscribe to newsletter and promotional emails
+                                </label>
+                                {% if profile_form.newsletter_subscription.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ profile_form.newsletter_subscription.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between pt-3 border-top">
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Password Change Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        For security reasons, password changes are handled separately.
+                    </p>
+                    <a href="#" class="btn btn-warning">
+                        <i class="fas fa-lock me-2"></i>Change Password
+                    </a>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card shadow-sm mt-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <button class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
+                        <i class="fas fa-trash me-2"></i>Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Search Results - E-commerce Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mb-4">Search Results for "{{ query }}"</h1>
+
+  <div class="row">
+    {% for product in products %}
+      <div class="col-md-3 mb-4">
+        <div class="card h-100">
+          {% if product.featured_image %}
+            <a href="{{ product.get_absolute_url }}">
+              <img src="{{ product.featured_image.url }}" class="card-img-top" alt="{{ product.name }}">
+            </a>
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+            </h5>
+            <p class="card-text text-primary mb-1">${{ product.price }}</p>
+            {% if product.compare_price %}
+              <small class="text-muted text-decoration-line-through">${{ product.compare_price }}</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No products found matching your search.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

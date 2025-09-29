@@ -1,0 +1,251 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}All Products - E-commerce Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Home</a></li>
+                    <li class="breadcrumb-item active">All Products</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-3">All Products</h1>
+            <p class="text-muted">Discover our wide range of quality products</p>
+        </div>
+    </div>
+    <!-- Products Grid -->
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card product-card h-100">
+                        <div class="position-relative">
+                            {% if product.featured_image %}
+                                <img src="{{ product.featured_image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="card-img-top product-image bg-light d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-image text-muted fa-3x"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Badges -->
+                            {% if product.is_featured %}
+                                <span class="featured-badge">
+                                    <i class="fas fa-star"></i> Featured
+                                </span>
+                            {% endif %}
+                            
+                            {% if product.is_on_sale %}
+                                <span class="discount-badge">
+                                    -{{ product.discount_percentage }}%
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="product-title">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ product.name }}
+                                </a>
+                            </h5>
+                            
+                            {% if product.short_description %}
+                                <p class="card-text text-muted small">{{ product.short_description|truncatewords:10 }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-auto">
+                                <!-- Price -->
+                                <div class="mb-2">
+                                    <span class="product-price">${{ product.price }}</span>
+                                    {% if product.compare_price %}
+                                        <span class="product-compare-price ms-2">${{ product.compare_price }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Stock Status -->
+                                <div class="stock-status mb-3">
+                                    {% if product.is_in_stock %}
+                                        <small class="in-stock">
+                                            <i class="fas fa-check-circle"></i> In Stock
+                                            {% if product.is_low_stock %}
+                                                ({{ product.quantity }} left)
+                                            {% endif %}
+                                        </small>
+                                    {% else %}
+                                        <small class="out-of-stock">
+                                            <i class="fas fa-times-circle"></i> Out of Stock
+                                        </small>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="d-grid gap-2">
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                    {% if product.is_in_stock %}
+                                        <form method="post" action="{% url 'shopping_cart:add_to_cart' product.id %}" class="add-to-cart-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <button class="btn btn-secondary btn-sm" disabled>
+                                            <i class="fas fa-ban"></i> Out of Stock
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <nav aria-label="Products pagination" class="mt-4">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <!-- No Products Message -->
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-box-open fa-5x text-muted"></i>
+                </div>
+                <h3 class="h4 mb-3">No Products Found</h3>
+                <p class="text-muted mb-4">We don't have any products available at the moment.</p>
+                <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                    <i class="fas fa-refresh"></i> Refresh Page
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add to cart functionality with better UX
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+    
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            
+            // The form will submit normally to Django
+            // No need to prevent default or use AJAX for now
+            
+            // Reset button after 3 seconds if still on page (fallback)
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }, 3000);
+        });
+    });
+});
+</script>
+
+<style>
+.add-to-cart-form {
+    margin: 0;
+}
+
+.product-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ffc107;
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.in-stock {
+    color: #198754;
+}
+
+.out-of-stock {
+    color: #dc3545;
+}
+
+.product-price {
+    font-weight: bold;
+    color: #0d6efd;
+    font-size: 1.1rem;
+}
+
+.product-compare-price {
+    color: #6c757d;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

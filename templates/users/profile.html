@@ -1,0 +1,223 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}My Profile - E-commerce Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Home</a></li>
+            <li class="breadcrumb-item active">My Profile</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" 
+                             alt="{{ user.username }}" 
+                             class="rounded-circle mb-3"
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 120px; height: 120px; font-size: 3rem;">
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                    <h5 class="mb-1">{{ profile.full_name }}</h5>
+                    <p class="text-muted mb-3">@{{ user.username }}</p>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-primary btn-sm w-100 mb-2">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="card mt-3">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user me-2"></i>My Profile
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-box me-2"></i>My Orders
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i>Wishlist
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </a>
+                    <form method="post" action="{% url 'users:logout' %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="list-group-item list-group-item-action text-danger" 
+                                style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Personal Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Personal Information</h5>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Username</strong>
+                            <p class="mb-0">{{ user.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Email</strong>
+                            <p class="mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">First Name</strong>
+                            <p class="mb-0">{{ user.first_name|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Last Name</strong>
+                            <p class="mb-0">{{ user.last_name|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Phone Number</strong>
+                            <p class="mb-0">{{ profile.phone_number|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Date of Birth</strong>
+                            <p class="mb-0">{{ profile.date_of_birth|date:"F d, Y"|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+                    {% if profile.bio %}
+                        <div class="row">
+                            <div class="col-12">
+                                <strong class="text-muted d-block mb-1">Bio</strong>
+                                <p class="mb-0">{{ profile.bio }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Address Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Address Information</h5>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if profile.address_line1 %}
+                        <div class="mb-3">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            <strong class="text-muted">Primary Address</strong>
+                            <p class="mb-0 mt-2">
+                                {{ profile.address_line1 }}<br>
+                                {% if profile.address_line2 %}
+                                    {{ profile.address_line2 }}<br>
+                                {% endif %}
+                                {{ profile.city }}, {{ profile.state }} {{ profile.postal_code }}<br>
+                                {{ profile.country }}
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No address added yet.</p>
+                            <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add Address
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Account Settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Member Since</strong>
+                            <p class="mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong class="text-muted d-block mb-1">Last Login</strong>
+                            <p class="mb-0">{{ user.last_login|date:"F d, Y h:i A"|default:"Never" }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="newsletterSwitch" 
+                                       {% if profile.newsletter_subscription %}checked{% endif %} disabled>
+                                <label class="form-check-label" for="newsletterSwitch">
+                                    Newsletter Subscription
+                                    {% if profile.newsletter_subscription %}
+                                        <span class="badge bg-success ms-2">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary ms-2">Inactive</span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Statistics -->
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-shopping-bag fa-2x text-primary mb-2"></i>
+                            <h3 class="mb-0">0</h3>
+                            <p class="text-muted mb-0">Total Orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+                            <h3 class="mb-0">0</h3>
+                            <p class="text-muted mb-0">Wishlist Items</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                            <h3 class="mb-0">0</h3>
+                            <p class="text-muted mb-0">Reviews</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
