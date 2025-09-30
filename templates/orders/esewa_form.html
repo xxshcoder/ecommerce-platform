@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to eSewa...</title>
+</head>
+<body>
+    <p>Redirecting to eSewa payment...</p>
+    <form id="esewaForm" action="{{ esewa_url }}" method="POST">
+        {% for key, value in esewa_params.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+    </form>
+    <script>
+        document.getElementById('esewaForm').submit();
+    </script>
+</body>
+</html>

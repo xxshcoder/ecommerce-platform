@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash on Delivery Confirmation</title>
+</head>
+<body>
+    <h1>Confirm Cash on Delivery</h1>
+    <p>Order: {{ order.order_number }}</p>
+    <p>Total Amount: NPR {{ order.total_amount }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Confirm COD</button>
+    </form>
+    <a href="{% url 'orders:order_detail' order_number=order.order_number %}">Cancel</a>
+</body>
+</html>

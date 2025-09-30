@@ -73,7 +73,7 @@
                             {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'users:profile' %}"><i class="fas fa-user-circle me-2"></i>My Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item" href="{% url 'orders:order_list' %}"><i class="fas fa-box me-2"></i>My Orders</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

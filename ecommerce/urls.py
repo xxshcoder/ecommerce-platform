@@ -1,3 +1,4 @@
+# ecommerce/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -7,9 +8,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
     path('cart/', include('shopping_cart.urls')),
-    path('users/', include('users.urls')),  # Uncomment this
-    # path('orders/', include('orders.urls')),
+    path('users/', include('users.urls')),
+    path('orders/', include('orders.urls')),
+    path('payments/', include('payments.urls')),  # Add payments app for eSewa callbacks
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    

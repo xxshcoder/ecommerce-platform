@@ -189,3 +189,20 @@ LOGOUT_REDIRECT_URL = 'products:product_list'
 # Session settings
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+
+
+# eSewa Configuration
+# settings.py
+
+# Sandbox URLs
+ESEWA_PAYMENT_URL = "https://rc-epay.esewa.com.np/api/epay/main/v2/form"
+ESEWA_VERIFICATION_URL = "https://rc-epay.esewa.com.np/api/epay/transaction/status"
+
+# Test merchant credentials
+ESEWA_MERCHANT_ID = "EPAYTEST"
+ESEWA_SECRET_KEY = "8gBm/:&EnhH.1/q"
+
+ESEWA_SUCCESS_URL = "/payments/esewa/success/"
+ESEWA_FAILURE_URL = "/payments/esewa/failure/"

@@ -165,9 +165,9 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <a href="#" class="btn btn-primary btn-lg">
-                                <i class="fas fa-lock me-2"></i>Proceed to Checkout
-                            </a>
+                            <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-lg">
+                                 <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                                    </a>
                             <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary">
                                 Continue Shopping
                             </a>

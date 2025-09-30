@@ -1,0 +1,228 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - E-commerce Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shopping_cart:cart_detail' %}">Cart</a></li>
+            <li class="breadcrumb-item active">Checkout</li>
+        </ol>
+    </nav>
+
+    <h1 class="h2 mb-4">Checkout</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Shipping Information and Payment Method -->
+            <div class="col-lg-7 mb-4">
+                <!-- Shipping Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Shipping Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_full_name.id_for_label }}" class="form-label">
+                                    {{ form.shipping_full_name.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_full_name }}
+                                {% if form.shipping_full_name.errors %}
+                                    <div class="text-danger small">{{ form.shipping_full_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_email.id_for_label }}" class="form-label">
+                                    {{ form.shipping_email.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_email }}
+                                {% if form.shipping_email.errors %}
+                                    <div class="text-danger small">{{ form.shipping_email.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.shipping_phone.id_for_label }}" class="form-label">
+                                {{ form.shipping_phone.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.shipping_phone }}
+                            {% if form.shipping_phone.errors %}
+                                <div class="text-danger small">{{ form.shipping_phone.errors }}</div>
+                                {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.shipping_address_line1.id_for_label }}" class="form-label">
+                                {{ form.shipping_address_line1.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.shipping_address_line1 }}
+                            {% if form.shipping_address_line1.errors %}
+                                <div class="text-danger small">{{ form.shipping_address_line1.errors }}</div>
+                                {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.shipping_address_line2.id_for_label }}" class="form-label">
+                                {{ form.shipping_address_line2.label }}
+                            </label>
+                            {{ form.shipping_address_line2 }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_city.id_for_label }}" class="form-label">
+                                    {{ form.shipping_city.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_city }}
+                                {% if form.shipping_city.errors %}
+                                    <div class="text-danger small">{{ form.shipping_city.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_state.id_for_label }}" class="form-label">
+                                    {{ form.shipping_state.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_state }}
+                                {% if form.shipping_state.errors %}
+                                    <div class="text-danger small">{{ form.shipping_state.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_postal_code.id_for_label }}" class="form-label">
+                                    {{ form.shipping_postal_code.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_postal_code }}
+                                {% if form.shipping_postal_code.errors %}
+                                    <div class="text-danger small">{{ form.shipping_postal_code.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.shipping_country.id_for_label }}" class="form-label">
+                                    {{ form.shipping_country.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.shipping_country }}
+                                {% if form.shipping_country.errors %}
+                                    <div class="text-danger small">{{ form.shipping_country.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.order_notes.id_for_label }}" class="form-label">
+                                {{ form.order_notes.label }}
+                            </label>
+                            {{ form.order_notes }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Method</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form.payment_method }}
+                        {% if form.payment_method.errors %}
+                            <div class="text-danger small">{{ form.payment_method.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-5">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Order Items -->
+                        <div class="mb-3">
+                            {% for item in items %}
+                                <div class="d-flex mb-3 pb-3 border-bottom">
+                                    <div class="me-3">
+                                        {% if item.product.featured_image %}
+                                            <img src="{{ item.product.featured_image.url }}" 
+                                                 alt="{{ item.product.name }}" 
+                                                 class="rounded"
+                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                                 style="width: 60px; height: 60px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ item.product.name }}</h6>
+                                        <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                        <div class="text-end">
+                                            <strong>${{ item.total_price }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Order Totals -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <strong>${{ subtotal }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax (10%):</span>
+                            <strong>${{ tax }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span class="text-success">FREE</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">Total:</h5>
+                            <h5 class="mb-0 text-primary">${{ total }}</h5>
+                        </div>
+
+                        <!-- Place Order Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-lock me-2"></i>Place Order
+                            </button>
+                            <a href="{% url 'shopping_cart:cart_detail' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                            </a>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-shield-alt text-success me-2"></i>
+                                <small>Secure Checkout</small>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-truck text-primary me-2"></i>
+                                <small>Free Shipping</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-undo text-info me-2"></i>
+                                <small>30-Day Returns</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Payment Method</title>
+</head>
+<body>
+    <h1>Select Payment Method for Order {{ order.order_number }}</h1>
+    <p>Total Amount: NPR {{ order.total_amount }}</p>
+    <a href="{% url 'payments:initiate_esewa_payment' order_number=order.order_number %}">Pay with eSewa</a><br>
+    <a href="{% url 'payments:cash_on_delivery' order_number=order.order_number %}">Cash on Delivery</a>
+</body>
+</html>
