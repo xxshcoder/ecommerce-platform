@@ -1,0 +1,196 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Add Product{% endblock %}
+{% block page_title %}Add New Product{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Basic Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SKU <span class="text-danger">*</span></label>
+                            <input type="text" name="sku" class="form-control" required>
+                            <small class="text-muted">Unique product identifier</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category <span class="text-danger">*</span></label>
+                            <select name="category" class="form-select" required>
+                                <option value="">Select Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Brand</label>
+                        <select name="brand" class="form-select">
+                            <option value="">Select Brand (Optional)</option>
+                            {% for brand in brands %}
+                                <option value="{{ brand.id }}">{{ brand.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Short Description</label>
+                        <textarea name="short_description" class="form-control" rows="2" maxlength="300"></textarea>
+                        <small class="text-muted">Brief description (max 300 characters)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Full Description <span class="text-danger">*</span></label>
+                        <textarea name="description" class="form-control" rows="5" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-tag me-2"></i>Pricing</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price (NPR) <span class="text-danger">*</span></label>
+                            <input type="number" name="price" class="form-control" step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Compare at Price (NPR)</label>
+                            <input type="number" name="compare_price" class="form-control" step="0.01" min="0">
+                            <small class="text-muted">Original price (for showing discount)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="track_quantity" id="trackQuantity" checked>
+                        <label class="form-check-label" for="trackQuantity">
+                            Track quantity for this product
+                        </label>
+                    </div>
+
+                    <div id="quantityFields">
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" name="quantity" class="form-control" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-images me-2"></i>Product Images</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Featured Image</label>
+                        <input type="file" name="featured_image" class="form-control" accept="image/*">
+                        <small class="text-muted">Main product image (recommended size: 800x800px)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Additional Images</label>
+                        <input type="file" name="additional_images" class="form-control" accept="image/*" multiple>
+                        <small class="text-muted">You can select multiple images</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Status -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-toggle-on me-2"></i>Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="is_active" id="isActive" checked>
+                        <label class="form-check-label" for="isActive">
+                            <strong>Active</strong><br>
+                            <small class="text-muted">Product will be visible on store</small>
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_featured" id="isFeatured">
+                        <label class="form-check-label" for="isFeatured">
+                            <strong>Featured Product</strong><br>
+                            <small class="text-muted">Show in featured section</small>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Save Product
+                        </button>
+                        <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Tips</h6>
+                </div>
+                <div class="card-body">
+                    <small>
+                        <ul class="mb-0 ps-3">
+                            <li>Use clear, descriptive product names</li>
+                            <li>Add high-quality images</li>
+                            <li>Write detailed descriptions</li>
+                            <li>Set accurate stock levels</li>
+                            <li>Use compare price to show discounts</li>
+                        </ul>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle quantity fields based on track_quantity checkbox
+    document.getElementById('trackQuantity').addEventListener('change', function() {
+        document.getElementById('quantityFields').style.display = this.checked ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

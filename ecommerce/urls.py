@@ -11,6 +11,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('orders/', include('orders.urls')),
     path('payments/', include('payments.urls')),  # Add payments app for eSewa callbacks
+    path('dashboard/', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:

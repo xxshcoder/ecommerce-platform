@@ -1,0 +1,140 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block page_title %}Order Details{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+        <!-- Order Items -->
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-box me-2"></i>Order Items</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.featured_image %}
+                                                <img src="{{ item.product.featured_image.url }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% endif %}
+                                            <div>
+                                                <strong>{{ item.product_name }}</strong><br>
+                                                <small class="text-muted">SKU: {{ item.product_sku }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>NPR {{ item.product_price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td><strong>NPR {{ item.total_price }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Shipping Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Shipping Address</h6>
+                        <p class="mb-0">
+                            {{ order.shipping_full_name }}<br>
+                            {{ order.shipping_address_line1 }}<br>
+                            {% if order.shipping_address_line2 %}{{ order.shipping_address_line2 }}<br>{% endif %}
+                            {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}<br>
+                            {{ order.shipping_country }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact Information</h6>
+                        <p class="mb-0">
+                            <i class="fas fa-envelope me-2"></i>{{ order.shipping_email }}<br>
+                            <i class="fas fa-phone me-2"></i>{{ order.shipping_phone }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+        <!-- Order Summary -->
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Summary</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Order Number:</strong> {{ order.order_number }}</p>
+                <p class="mb-2"><strong>Date:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+                <p class="mb-2"><strong>Customer:</strong> {{ order.user.username }}</p>
+                <hr>
+                <p class="mb-2">Subtotal: NPR {{ order.subtotal }}</p>
+                <p class="mb-2">Tax: NPR {{ order.tax_amount }}</p>
+                <p class="mb-2">Shipping: {% if order.shipping_cost == 0 %}FREE{% else %}NPR {{ order.shipping_cost }}{% endif %}</p>
+                <hr>
+                <h5>Total: NPR {{ order.total_amount }}</h5>
+            </div>
+        </div>
+
+        <!-- Update Status -->
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Update Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Order Status</label>
+                        <select name="status" class="form-select">
+                            <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                            <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save me-2"></i>Update Status
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'dashboard:order_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                    </a>
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Print Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

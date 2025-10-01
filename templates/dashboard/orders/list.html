@@ -1,0 +1,150 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Orders Management{% endblock %}
+{% block page_title %}Orders Management{% endblock %}
+
+{% block content %}
+<!-- Stats Bar -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="text-muted mb-2">Total Orders</h6>
+                <h3 class="mb-0">{{ orders.paginator.count }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-5">
+                <input type="text" 
+                       name="search" 
+                       class="form-control" 
+                       placeholder="Search by order number, customer..." 
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="processing" {% if status_filter == 'processing' %}selected{% endif %}>Processing</option>
+                    <option value="shipped" {% if status_filter == 'shipped' %}selected{% endif %}>Shipped</option>
+                    <option value="delivered" {% if status_filter == 'delivered' %}selected{% endif %}>Delivered</option>
+                    <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td><strong>{{ order.order_number }}</strong></td>
+                            <td>
+                                {{ order.user.get_full_name|default:order.user.username }}<br>
+                                <small class="text-muted">{{ order.shipping_email }}</small>
+                            </td>
+                            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                            <td>{{ order.total_items }}</td>
+                            <td><strong>NPR {{ order.total_amount }}</strong></td>
+                            <td>
+                                {% if order.payment_status == 'completed' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% elif order.payment_status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif order.payment_status == 'failed' %}
+                                    <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if order.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif order.status == 'processing' %}
+                                    <span class="badge bg-info">Processing</span>
+                                {% elif order.status == 'shipped' %}
+                                    <span class="badge bg-primary">Shipped</span>
+                                {% elif order.status == 'delivered' %}
+                                    <span class="badge bg-success">Delivered</span>
+                                {% elif order.status == 'cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'dashboard:order_detail' order.order_number %}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="fas fa-shopping-cart fa-3x mb-3 d-block"></i>
+                                No orders found
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if orders.has_other_pages %}
+        <div class="card-footer bg-white">
+            <nav aria-label="Orders pagination">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if orders.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">Page {{ orders.number }} of {{ orders.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if orders.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ orders.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ orders.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

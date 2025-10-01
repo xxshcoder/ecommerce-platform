@@ -1,0 +1,20 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - db_volume:/app/db  # Volume for SQLite database
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-your-secret-key-here-change-in-production
+      - ALLOWED_HOSTS=localhost 127.0.0.1 0.0.0.0 [::1]
+
+volumes:
+  static_volume:
+  media_volume:
+  db_volume:  # Persistent volume for SQLite database

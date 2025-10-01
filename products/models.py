@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.text import slugify
 
+# ------------------------------
+# Product Category
+# ------------------------------
 class ProductCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
@@ -27,6 +30,9 @@ class ProductCategory(models.Model):
     def get_absolute_url(self):
         return reverse('products:category_products', kwargs={'slug': self.slug})
 
+# ------------------------------
+# Brand
+# ------------------------------
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
@@ -46,6 +52,9 @@ class Brand(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+# ------------------------------
+# Product
+# ------------------------------
 class Product(models.Model):
     AVAILABILITY_CHOICES = [
         ('in_stock', 'In Stock'),
@@ -63,7 +72,7 @@ class Product(models.Model):
     )
     brand = models.ForeignKey(
         Brand, 
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='products',
         blank=True,
         null=True
@@ -97,7 +106,7 @@ class Product(models.Model):
         choices=AVAILABILITY_CHOICES,
         default='in_stock'
     )
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)  # Archive instead of delete
     is_featured = models.BooleanField(default=False)
     
     # SEO
@@ -156,6 +165,9 @@ class Product(models.Model):
             return False
         return self.quantity <= self.low_stock_threshold
 
+# ------------------------------
+# Product Images
+# ------------------------------
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, 
