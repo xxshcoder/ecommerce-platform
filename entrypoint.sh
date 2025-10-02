@@ -1,9 +1,13 @@
 #!/bin/sh
 
-echo "Starting Django application..."
+echo "Waiting for PostgreSQL to start..."
 
-# Create db directory if it doesn't exist
-mkdir -p /app/db
+# Wait for PostgreSQL
+while ! nc -z db 5432; do
+  sleep 0.1
+done
+
+echo "PostgreSQL started! 🐘"
 
 # Run migrations
 echo "Running migrations..."
@@ -26,7 +30,7 @@ END
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-echo "✅ Django application ready!"
+echo "✅ Setup complete! Starting server..."
 
-# Start server
+# Execute the main command
 exec "$@"
