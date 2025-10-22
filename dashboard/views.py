@@ -6,6 +6,8 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
 
 from products.models import Product, ProductCategory, Brand, ProductImage
 from orders.models import Order, OrderItem
@@ -202,6 +204,106 @@ def delete_product_image(request, image_id):
         image.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
+
+# ------------------------------
+# AJAX: Add Category
+# ------------------------------
+@staff_member_required
+@require_http_methods(["POST"])
+def ajax_add_category(request):
+    """AJAX endpoint for adding a new category"""
+    try:
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        description = data.get('description', '').strip()
+        
+        if not name:
+            return JsonResponse({
+                'success': False,
+                'error': 'Category name is required'
+            }, status=400)
+        
+        # Check if category already exists
+        if ProductCategory.objects.filter(name__iexact=name).exists():
+            return JsonResponse({
+                'success': False,
+                'error': 'A category with this name already exists'
+            }, status=400)
+        
+        # Create category
+        category = ProductCategory.objects.create(
+            name=name,
+            description=description
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'category': {
+                'id': category.id,
+                'name': category.name
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+# ------------------------------
+# AJAX: Add Brand
+# ------------------------------
+@staff_member_required
+@require_http_methods(["POST"])
+def ajax_add_brand(request):
+    """AJAX endpoint for adding a new brand"""
+    try:
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        description = data.get('description', '').strip()
+        
+        if not name:
+            return JsonResponse({
+                'success': False,
+                'error': 'Brand name is required'
+            }, status=400)
+        
+        # Check if brand already exists
+        if Brand.objects.filter(name__iexact=name).exists():
+            return JsonResponse({
+                'success': False,
+                'error': 'A brand with this name already exists'
+            }, status=400)
+        
+        # Create brand
+        brand = Brand.objects.create(
+            name=name,
+            description=description
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'brand': {
+                'id': brand.id,
+                'name': brand.name
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 
 # ------------------------------
 # Orders

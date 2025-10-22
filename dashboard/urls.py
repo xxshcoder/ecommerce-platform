@@ -14,6 +14,10 @@ urlpatterns = [
     path('products/<int:product_id>/delete/', views.product_delete, name='product_delete'),
     path('products/image/<int:image_id>/delete/', views.delete_product_image, name='delete_product_image'),
     
+    # AJAX endpoints for quick add
+    path('ajax/category/add/', views.ajax_add_category, name='ajax_add_category'),
+    path('ajax/brand/add/', views.ajax_add_brand, name='ajax_add_brand'),
+    
     # Orders
     path('orders/', views.order_list, name='order_list'),
     path('orders/<str:order_number>/', views.order_detail, name='order_detail'),
