@@ -4,9 +4,6 @@
 
 ### A modern, full-featured e-commerce solution built with Django
 
-![Repo Card](https://github-readme-stats.vercel.app/api/pin/?username=xxshcoder&repo=django-ecommerce&theme=default)
-
-
 [![Django](https://img.shields.io/badge/Django-5.1-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
